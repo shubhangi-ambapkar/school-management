@@ -30,24 +30,26 @@ export class LessonService {
     return this.lessonRepo.save(result);
   }
 
-  // async updateLesson(
-  //   id: string,
-  //   updateLessonDto: UpdateLessonDto,
-  // ): Promise<Lesson> {
-  //   const lesson = await this.getLessonById(id);
-  //   if (!lesson) {
-  //     throw new NotFoundException();
-  //   }
-  //   Object.assign(lesson, updateLessonDto);
-  //   return await this.lessonRepo.save(lesson);
-  // }
+  async updateLesson(
+    id: string,
+    updateLessonDto: UpdateLessonDto,
+  ): Promise<Lesson> {
+    let lesson = await this.getLessonById(id);
+    if (!lesson) {
+      throw new NotFoundException();
+    }
+    lesson = Object.assign(lesson, updateLessonDto);
+    console.log(lesson);
+    await this.lessonRepo.update({ id: id }, lesson);
+    return await this.lessonRepo.findOneBy({ _id: lesson._id });
+  }
 
-  // async deleteLesson(id: string): Promise<boolean> {
-  //   const lesson = await this.getLessonById(id);
-  //   if (!lesson) {
-  //     throw new NotFoundException();
-  //   }
-  //   const result = await this.lessonRepo.delete(id);
-  //   return result.affected > 0 ? true : false;
-  // }
+  async deleteLesson(id: string): Promise<boolean> {
+    const lesson = await this.getLessonById(id);
+    if (!lesson) {
+      throw new NotFoundException();
+    }
+    const result = await this.lessonRepo.delete({ id: id });
+    return result.affected > 0 ? true : false;
+  }
 }
