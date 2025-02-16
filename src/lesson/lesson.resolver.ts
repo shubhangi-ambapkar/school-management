@@ -22,16 +22,16 @@ export class LessonResolver {
     return this.lessonService.createLesson(createLessonDto);
   }
 
-  // @Mutation((returns) => LessonType)
-  // updateLesson(
-  //   @Args('id') id: string,
-  //   @Args('input') updateLessonDto: UpdateLessonDto,
-  // ) {
-  //   return this.lessonService.updateLesson(id, updateLessonDto);
-  // }
+  @Mutation((returns) => LessonType)
+  updateLesson(
+    @Args('id') id: string,
+    @Args('input') updateLessonDto: UpdateLessonDto,
+  ) {
+    return this.lessonService.updateLesson(id, updateLessonDto);
+  }
 
-  // @Mutation((returns) => Boolean)
-  // deleteLesson(@Args('id') id: string) {
-  //   return this.lessonService.deleteLesson(id);
-  // }
+  @Mutation((returns) => Boolean)
+  deleteLesson(@Args('id') id: string) {
+    return this.lessonService.deleteLesson(id);
+  }
 }
