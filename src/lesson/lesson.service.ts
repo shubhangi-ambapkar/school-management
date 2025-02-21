@@ -5,6 +5,7 @@ import { Lesson } from './lesson.entity';
 import { v4 as uuid } from 'uuid';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { AssignStudentsToLesson } from './dto/assign-students-to-lesson.dto';
 
 @Injectable()
 export class LessonService {
@@ -25,6 +26,7 @@ export class LessonService {
     const result = await this.lessonRepo.create({
       ...createLessonDto,
       _id: uuid(),
+      students: [],
     });
 
     return this.lessonRepo.save(result);
@@ -39,7 +41,6 @@ export class LessonService {
       throw new NotFoundException();
     }
     lesson = Object.assign(lesson, updateLessonDto);
-    console.log(lesson);
     await this.lessonRepo.update({ id: id }, lesson);
     return await this.lessonRepo.findOneBy({ _id: lesson._id });
   }
@@ -51,5 +52,21 @@ export class LessonService {
     }
     const result = await this.lessonRepo.delete({ id: id });
     return result.affected > 0 ? true : false;
+  }
+
+  async assignStudentsToLesson(
+    assignStudentsToLessonInput: AssignStudentsToLesson,
+  ): Promise<Lesson> {
+    const lesson = await this.lessonRepo.findOneBy({
+      id: assignStudentsToLessonInput.lessonId,
+    });
+
+    lesson.students = [
+      ...(lesson.students || []),
+      ...assignStudentsToLessonInput.studentsId,
+    ];
+
+    await this.lessonRepo.update({ id: lesson.id }, lesson);
+    return await this.lessonRepo.findOneBy({ _id: lesson._id });
   }
 }
